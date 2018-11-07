@@ -1,0 +1,19 @@
+{
+  "name": "vue-mixed-props",
+  "version": "1.0.0",
+  "description": "Vue 2.x plugin, which allows to pass an array of props containing both strings and objects",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/p1pchenk0/vue-mixed-props.git"
+  },
+  "author": "Artur Pipchenko",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/p1pchenk0/vue-mixed-props/issues"
+  },
+  "homepage": "https://github.com/p1pchenk0/vue-mixed-props#readme"
+}
