@@ -30,4 +30,12 @@ export default {
 }
 ```
 
+Usage:
+```javascript
+  import Vue from 'vue'
+  import MixedProps from 'vue-mixed-props'
+
+  Vue.use(MixedProps)
+```
+
 Plugin works also with SSR.
