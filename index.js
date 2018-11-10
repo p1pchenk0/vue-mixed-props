@@ -19,26 +19,23 @@ exports.default = {
 
     function normalizeObjectProp(key, val, res) {
       var objVal = val[key];
-      var name = camelize(key);
-      res[name] = objVal.toString() === "[object Object]" ? objVal : {
-        type: objVal
-      };
+      res[camelize(key)] = objVal.toString() === "[object Object]" ? objVal : { type: objVal };
+    }
+
+    function normalizeStringProp(val, res) {
+      res[camelize(val)] = { type: null };
     }
 
     function normalizeProps(options) {
       var i = options.props.length,
         res = {},
-        val = void 0,
-        name = void 0;
+        val = void 0;
 
       while (i--) {
         val = options.props[i];
 
         if (typeof val === "string") {
-          name = camelize(val);
-          res[name] = {
-            type: null
-          };
+          normalizeStringProp(val, res)
         } else if (val.toString() === "[object Object]") {
           for (var key in val) {
             normalizeObjectProp(key, val, res);
@@ -52,16 +49,13 @@ exports.default = {
     function normalizePropsObject(options) {
       var res = {},
         props = options.props;
-      val = void 0, name = void 0;
 
       for (var key in props) {
         if (key === '$strings') {
           var i = props.$strings.length;
 
           while (i--) {
-            val = props.$strings[i];
-            name = camelize(val);
-            res[name] = { type: null };
+            normalizeStringProp(props.$strings[i], res)
           }
         } else {
           normalizeObjectProp(key, props, res);
@@ -71,16 +65,20 @@ exports.default = {
       options.props = res;
     }
 
+    function checkIfNormalizationIsNeeded(options) {
+      if (hasPropsAsArray(options)) {
+        normalizeProps(options);
+      } else if (hasObjectPropsWithStrings(options)) {
+        normalizePropsObject(options);
+      }
+    }
+
     var originalComponentFn = Vue.component;
     var originalInit = Vue.prototype._init;
     var originalExtendFn = Vue.extend;
 
     Vue.extend = function (extendOptions) {
-      if (hasPropsAsArray(extendOptions)) {
-        normalizeProps(extendOptions);
-      } else if (hasObjectPropsWithStrings(extendOptions)) {
-        normalizePropsObject(extendOptions);
-      }
+      checkIfNormalizationIsNeeded(extendOptions);
 
       return originalExtendFn.call(Vue, extendOptions);
     };
@@ -88,11 +86,7 @@ exports.default = {
     Vue.prototype._init = function (options) {
       if (options && options.components) {
         for (var component in options.components) {
-          if (hasPropsAsArray(options.components[component])) {
-            normalizeProps(options.components[component]);
-          } else if (hasObjectPropsWithStrings(options.components[component])) {
-            normalizePropsObject(options.components[component]);
-          }
+          checkIfNormalizationIsNeeded(options.components[component])
         }
       }
 
@@ -100,11 +94,7 @@ exports.default = {
     };
 
     Vue.component = function (id, options) {
-      if (hasPropsAsArray(options)) {
-        normalizeProps(options);
-      } else if (hasObjectPropsWithStrings(options)) {
-        normalizePropsObject(options);
-      }
+      checkIfNormalizationIsNeeded(options)
 
       originalComponentFn.call(Vue, id, options);
     };
