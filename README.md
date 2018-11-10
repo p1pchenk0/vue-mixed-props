@@ -29,6 +29,20 @@ export default {
   ]
 }
 ```
+Or you can use object for `props` with array of some string props:
+```javascript
+  export default {
+    name: 'SampleComponent',
+    props: {
+      $strings: ['foo', 'bar', 'baz'],
+      tar: {
+        type: String,
+        default: 'Hi'
+      }
+    }
+  }
+``` 
+
 
 Usage:
 ```javascript
