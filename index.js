@@ -14,14 +14,14 @@ exports.default = {
     }
 
     function hasObjectPropsWithStrings(options) {
-      return options && options.props && options.props.toString() === '[object Object]' && '$strings' in options.props
+      return options && options.props && options.props.toString() === '[object Object]' && '$strings' in options.props;
     }
 
     function normalizeProps(options) {
       var i = options.props.length,
-        res = {},
-        val = void 0,
-        name = void 0;
+          res = {},
+          val = void 0,
+          name = void 0;
 
       while (i--) {
         val = options.props[i];
@@ -35,11 +35,9 @@ exports.default = {
           for (var key in val) {
             var objVal = val[key];
             name = camelize(key);
-            res[name] =
-              objVal.toString() === "[object Object]" ?
-                objVal : {
-                  type: objVal
-                };
+            res[name] = objVal.toString() === "[object Object]" ? objVal : {
+              type: objVal
+            };
           }
         }
       }
@@ -49,9 +47,8 @@ exports.default = {
 
     function normalizePropsObject(options) {
       var res = {},
-        props = options.props
-        val = void 0,
-        name = void 0;
+          props = options.props;
+      val = void 0, name = void 0;
 
       for (var key in props) {
         if (key === '$strings') {
@@ -65,15 +62,13 @@ exports.default = {
         } else {
           var objVal = props[key];
           name = camelize(key);
-          res[name] =
-            objVal.toString() === "[object Object]" ?
-              objVal : {
-                type: objVal
-              };
+          res[name] = objVal.toString() === "[object Object]" ? objVal : {
+            type: objVal
+          };
         }
       }
 
-      options.props = res
+      options.props = res;
     }
 
     var originalComponentFn = Vue.component;
@@ -84,7 +79,7 @@ exports.default = {
       if (hasPropsAsArray(extendOptions)) {
         normalizeProps(extendOptions);
       } else if (hasObjectPropsWithStrings(extendOptions)) {
-        normalizePropsObject(extendOptions)
+        normalizePropsObject(extendOptions);
       }
 
       return originalExtendFn.call(Vue, extendOptions);
@@ -96,7 +91,7 @@ exports.default = {
           if (hasPropsAsArray(options.components[component])) {
             normalizeProps(options.components[component]);
           } else if (hasObjectPropsWithStrings(options.components[component])) {
-            normalizePropsObject(options.components[component])
+            normalizePropsObject(options.components[component]);
           }
         }
       }
@@ -108,7 +103,7 @@ exports.default = {
       if (hasPropsAsArray(options)) {
         normalizeProps(options);
       } else if (hasObjectPropsWithStrings(options)) {
-        normalizePropsObject(options)
+        normalizePropsObject(options);
       }
 
       originalComponentFn.call(Vue, id, options);
