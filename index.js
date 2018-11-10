@@ -17,11 +17,19 @@ exports.default = {
       return options && options.props && options.props.toString() === '[object Object]' && '$strings' in options.props;
     }
 
+    function normalizeObjectProp(key, val, res) {
+      var objVal = val[key];
+      var name = camelize(key);
+      res[name] = objVal.toString() === "[object Object]" ? objVal : {
+        type: objVal
+      };
+    }
+
     function normalizeProps(options) {
       var i = options.props.length,
-          res = {},
-          val = void 0,
-          name = void 0;
+        res = {},
+        val = void 0,
+        name = void 0;
 
       while (i--) {
         val = options.props[i];
@@ -33,11 +41,7 @@ exports.default = {
           };
         } else if (val.toString() === "[object Object]") {
           for (var key in val) {
-            var objVal = val[key];
-            name = camelize(key);
-            res[name] = objVal.toString() === "[object Object]" ? objVal : {
-              type: objVal
-            };
+            normalizeObjectProp(key, val, res);
           }
         }
       }
@@ -47,7 +51,7 @@ exports.default = {
 
     function normalizePropsObject(options) {
       var res = {},
-          props = options.props;
+        props = options.props;
       val = void 0, name = void 0;
 
       for (var key in props) {
@@ -60,11 +64,7 @@ exports.default = {
             res[name] = { type: null };
           }
         } else {
-          var objVal = props[key];
-          name = camelize(key);
-          res[name] = objVal.toString() === "[object Object]" ? objVal : {
-            type: objVal
-          };
+          normalizeObjectProp(key, props, res);
         }
       }
 
